@@ -180,7 +180,9 @@ POSTSTAGE1_HOST_EXPORTS = \
 	CC_FOR_BUILD="$(STAGE_CC_WRAPPER) \
 	  $$r/$(HOST_SUBDIR)/prev-gcc/xgcc$(exeext) \
 	  -B$$r/$(HOST_SUBDIR)/prev-gcc/ \
-	  -B$(build_tooldir)/bin/"; export CC_FOR_BUILD;
+	  -B$(build_tooldir)/bin/"; export CC_FOR_BUILD; \
+	CFLAGS="$(BOOT_CFLAGS)"; export CFLAGS; \
+	LDFLAGS="$(BOOT_LDFLAGS)"; export LDFLAGS;
 
 # Target libraries are put under this directory:
 TARGET_SUBDIR = @target_subdir@
@@ -720,14 +722,12 @@ TAGS: do-TAGS
 [+ DEFINE configure +]
 .PHONY: configure-[+prefix+][+module+] maybe-configure-[+prefix+][+module+]
 maybe-configure-[+prefix+][+module+]:
+@if gcc-bootstrap
+configure-[+prefix+][+module+]: stage_current
+@endif gcc-bootstrap
 @if [+prefix+][+module+]
 maybe-configure-[+prefix+][+module+]: configure-[+prefix+][+module+]
-configure-[+prefix+][+module+]: [+ IF bootstrap +]
-@endif [+prefix+][+module+]
-@if [+prefix+][+module+]-bootstrap
-	@if test -f stage_last; then $(unstage); else $(MAKE) stage1-start; fi
-@endif [+prefix+][+module+]-bootstrap
-@if [+prefix+][+module+][+ ELSE bootstrap +]
+configure-[+prefix+][+module+]: [+ IF bootstrap +][+ ELSE +]
 	@: $(MAKE); $(unstage)[+ ENDIF bootstrap +]
 	@r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -802,6 +802,7 @@ configure-stage[+id+]-[+prefix+][+module+]:
 	libsrcdir="$$s/[+module+]"; \
 	$(SHELL) $${libsrcdir}/configure \
 	  [+args+] $${srcdiroption} \
+	  [+ IF prev +]--with-build-libsubdir=$(HOST_SUBDIR)[+ ENDIF prev +] \
 	  [+stage_configure_flags+] [+extra_configure_flags+]
 @endif [+prefix+][+module+]-bootstrap
 [+ ENDFOR bootstrap_stage +]
@@ -811,16 +812,14 @@ configure-stage[+id+]-[+prefix+][+module+]:
 [+ DEFINE all +]
 .PHONY: all-[+prefix+][+module+] maybe-all-[+prefix+][+module+]
 maybe-all-[+prefix+][+module+]:
+@if gcc-bootstrap
+all-[+prefix+][+module+]: stage_current
+@endif gcc-bootstrap
 @if [+prefix+][+module+]
 TARGET-[+prefix+][+module+]=[+
   IF target +][+target+][+ ELSE +]all[+ ENDIF target +]
 maybe-all-[+prefix+][+module+]: all-[+prefix+][+module+]
-all-[+prefix+][+module+]: configure-[+prefix+][+module+][+ IF bootstrap +]
-@endif [+prefix+][+module+]
-@if [+prefix+][+module+]-bootstrap
-	@if test -f stage_last; then $(unstage); else $(MAKE) stage1-start; fi
-@endif [+prefix+][+module+]-bootstrap
-@if [+prefix+][+module+][+ ELSE bootstrap +]
+all-[+prefix+][+module+]: configure-[+prefix+][+module+][+ IF bootstrap +][+ ELSE +]
 	@: $(MAKE); $(unstage)[+ ENDIF bootstrap +]
 	@r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -1259,7 +1258,7 @@ POSTSTAGE1_FLAGS_TO_PASS = \
 	CFLAGS="$(BOOT_CFLAGS)" \
 	LIBCFLAGS="$(BOOT_CFLAGS)" \
 	LDFLAGS="$(BOOT_LDFLAGS)" \
-	ADAC="\$$(CC)"
+	"`echo 'ADAFLAGS=$(BOOT_ADAFLAGS)' | sed -e s'/[^=][^=]*=$$/XFOO=/'`"
 
 # For stage 1:
 # * We force-disable intermodule optimizations, even if
@@ -1428,14 +1427,19 @@ do-distclean: distclean-stage1
 # not work as a dependency, just as the minimum necessary to avoid errors.
 stage_last:
 	$(MAKE) $(RECURSE_FLAGS_TO_PASS) stage1-bubble
-@endif gcc-bootstrap
+
+# Same as unstage, but not phony and defaulting to stage1-start.  We place
+# it in the dependency so that for example `make -j3 all-gcc' works.
+stage_current:
+	@if test -f stage_last; then $(unstage); else $(MAKE) stage1-start; fi
 
 .PHONY: restrap
 restrap:
 	@: $(MAKE); $(stage)
 	rm -rf stage1-$(TARGET_SUBDIR) [+ FOR bootstrap-stage +][+ IF prev
-	  +]stage[+id+] [+ ENDIF prev +][+ ENDFOR bootstrap-stage +]
+	  +]stage[+id+]-* [+ ENDIF prev +][+ ENDFOR bootstrap-stage +]
 	$(MAKE) $(RECURSE_FLAGS_TO_PASS) all
+@endif gcc-bootstrap
 
 # --------------------------------------
 # Dependencies between different modules
