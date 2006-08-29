@@ -623,7 +623,7 @@ case "${target}" in
   sh-*-linux*)
     noconfigdirs="$noconfigdirs ${libgcj} target-newlib target-libgloss"
     ;;    
-  sh*-*-pe|mips*-*-pe|*arm-wince-pe)
+  sh*-*-pe|mips*-*-pe|*arm-wince-pe|*arm-wince-cegcc)
     noconfigdirs="$noconfigdirs ${libgcj}"
     noconfigdirs="$noconfigdirs target-examples"
     noconfigdirs="$noconfigdirs target-libiberty texinfo send-pr"
@@ -807,6 +807,17 @@ case "${target}" in
     # Note however, that newlib will only be configured in this situation
     # if the --with-newlib option has been given, because otherwise
     # 'target-newlib' will appear in skipdirs.
+    ;;
+  *-wince-mingw32*)
+    target_configdirs="$target_configdirs target-mingw"
+    noconfigdirs="$noconfigdirs expect target-libgloss ${libgcj}"
+
+    # Can't build gdb for mingw32 if not native.
+    case "${host}" in
+      *-wince-mingw32*) ;; # keep gdb tcl tk expect etc.
+      *) noconfigdirs="$noconfigdirs gdb tcl tk expect itcl gnuserv"
+         ;;
+    esac
     ;;
   i[[3456789]]86-w64-mingw*)
     noconfigdirs="$noconfigdirs expect target-libgloss target-newlib ${libgcj}"
@@ -2371,7 +2382,7 @@ case "${target}" in
     # ranlib before Darwin10 requires the -c flag to look at common symbols.
     extra_ranlibflags_for_target=" -c"
     ;;
-  mips*-*-pe | sh*-*-pe | *arm-wince-pe)
+  mips*-*-pe | sh*-*-pe | *arm-wince-*)
     target_makefile_frag="config/mt-wince"
     ;;
 esac
