@@ -3402,7 +3402,7 @@ case "${target}" in
     # newlib is not 64 bit ready
     noconfigdirs="$noconfigdirs target-newlib target-libgloss"
     ;;
-  sh*-*-pe|mips*-*-pe|*arm-wince-pe)
+  sh*-*-pe|mips*-*-pe|*arm-wince-pe|*arm-wince-cegcc)
     noconfigdirs="$noconfigdirs tcl tk itcl libgui sim"
     ;;
   arc-*-*)
@@ -3474,6 +3474,17 @@ case "${target}" in
   ia64*-*-*vms*)
     # No gdb or ld support yet.
     noconfigdirs="$noconfigdirs readline libgui itcl gdb ld"
+    ;;
+  *-wince-mingw32*)
+    target_configdirs="$target_configdirs target-mingw"
+    noconfigdirs="$noconfigdirs expect target-libgloss ${libgcj}"
+
+    # Can't build gdb for mingw32 if not native.
+    case "${host}" in
+      *-wince-mingw32*) ;; # keep gdb tcl tk expect etc.
+      *) noconfigdirs="$noconfigdirs gdb tcl tk expect itcl gnuserv"
+         ;;
+    esac
     ;;
   i[3456789]86-w64-mingw*)
     ;;
