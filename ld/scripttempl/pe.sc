@@ -160,34 +160,16 @@ SECTIONS
 
   .rdata ${RELOCATING+BLOCK(__section_alignment__)} :
   {
-  /* Start original .rdata */
     ${R_RDATA}
     ${RELOCATING+__rt_psrelocs_start = .;}
     ${RELOCATING+KEEP(*(.rdata_runtime_pseudo_reloc))}
     ${RELOCATING+__rt_psrelocs_end = .;}
-  /* End original .rdata */
-
-  ${RELOCATING+. = ALIGN(16);}
 
   /* Moved .edata */
-    ${RELOCATING+__edata_start__ = .;}
-    *(.edata)
-    ${RELOCATING+__edata_end__ = .;}
   /* End moved .edata */
 
-
-  ${RELOCATING+. = ALIGN(16);}
-
   /* Moved .idata */
-    /* This cannot currently be handled with grouped sections.
-	See pe.em:sort_sections.  */
-    ${RELOCATING+__idata_start__ = .;}
-    ${R_IDATA234}
-    ${RELOCATING+__IAT_start__ = .;}
-    ${R_IDATA5}
-    ${RELOCATING+__IAT_end__ = .;}
-    ${R_IDATA67}
-    ${RELOCATING+__idata_end__ = .;}
+	/* Moving idata appears to cause a crash even in d2.exe */
   /* End moved .idata */
   }
   ${RELOCATING+__rt_psrelocs_size = __rt_psrelocs_end - __rt_psrelocs_start;}
@@ -214,6 +196,11 @@ SECTIONS
     ${RELOCATING+__bss_end__ = . ;}
   }
 
+  .edata ${RELOCATING+BLOCK(__section_alignment__)} :
+  {
+    *(.edata)
+  }
+
   /DISCARD/ :
   {
     *(.debug\$S)
@@ -224,6 +211,16 @@ SECTIONS
     ${RELOCATING+ *(.gnu.lto_*)}
   }
 
+  .idata ${RELOCATING+BLOCK(__section_alignment__)} :
+  {
+    /* This cannot currently be handled with grouped sections.
+	See pe.em:sort_sections.  */
+    ${R_IDATA234}
+    ${RELOCATING+__IAT_start__ = .;}
+    ${R_IDATA5}
+    ${RELOCATING+__IAT_end__ = .;}
+    ${R_IDATA67}
+  }
   .CRT ${RELOCATING+BLOCK(__section_alignment__)} :
   {
     ${RELOCATING+___crt_xc_start__ = . ;}
