@@ -1,0 +1,76 @@
+#!/usr/bin/make -f
+# -*- mode: makefile; coding: utf-8 -*-
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+  CFLAGS += -O0
+else
+  CFLAGS += -O2
+endif
+
+TARGET = arm-mingw32ce
+
+configure: debian/stamp-configure
+debian/stamp-configure:
+	dh_testdir
+	mkdir -p debian/build/arm
+	cd debian/build/arm && CFLAGS="$(CFLAGS)" ../../../configure \
+		--build=$(DEB_BUILD_GNU_TYPE) \
+		--host=$(DEB_HOST_GNU_TYPE) \
+		--target=$(TARGET) \
+		--disable-dependency-tracking \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--disable-nls \
+		--disable-werror
+	@touch $@
+
+build: debian/stamp-build
+debian/stamp-build: debian/stamp-configure
+	dh_testdir
+	$(MAKE) -C debian/build/arm
+	@touch $@
+
+install: debian/stamp-install
+debian/stamp-install: debian/stamp-build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	$(MAKE) -C debian/build/arm DESTDIR=$(abspath debian/tmp) install
+	@touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f debian/stamp-*
+	rm -rf debian/build
+	dh_clean
+
+# Build architecture-independent files here.
+binary-indep:
+
+# Build architecture-dependent files here.
+binary-arch: install
+	dh_testdir -a
+	dh_testroot -a
+	dh_installdocs -a
+	dh_installchangelogs -a
+	dh_install -a
+	dh_link -a
+	dh_strip -p binutils-arm-ming32ce --dbg-package=binutils-arm-ming32ce-dbg
+	dh_compress -a
+	dh_fixperms -a
+	dh_installdeb -a
+	dh_shlibdeps -a
+	dh_gencontrol -a
+	dh_md5sums -a
+	dh_builddeb -a
+
+source diff:
+	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

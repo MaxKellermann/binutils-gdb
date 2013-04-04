@@ -1,0 +1,5 @@
+cegcc-binutils (2.22-1) unstable; urgency=low
+
+  * initial Debian package
+
+ -- Max Kellermann <max@duempel.org>  Fri, 05 Apr 2013 11:30:22 +0200

@@ -1,0 +1,7 @@
+/stamp-*
+/*-arm-ming32ce*/
+/build
+/tmp
+/*.substvars
+/*.log
+/files
