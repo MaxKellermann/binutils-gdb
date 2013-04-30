@@ -1,5 +1,5 @@
 /stamp-*
-/*-arm-ming32ce*/
+/*-arm-mingw32ce*/
 /build
 /tmp
 /*.substvars

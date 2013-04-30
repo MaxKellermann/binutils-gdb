@@ -1,6 +1,6 @@
 cegcc-binutils (2.22-2) unstable; urgency=low
 
-  * 
+  * rename ming32ce to mingw32ce
 
  --
 
