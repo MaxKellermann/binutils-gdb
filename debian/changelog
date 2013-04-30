@@ -2,7 +2,7 @@ cegcc-binutils (2.22-2) unstable; urgency=low
 
   * rename ming32ce to mingw32ce
 
- --
+ -- Max Kellermann <max@duempel.org>  Tue, 30 Apr 2013 13:53:13 +0200
 
 cegcc-binutils (2.22-1) unstable; urgency=low
 
