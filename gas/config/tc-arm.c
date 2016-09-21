@@ -3621,6 +3621,8 @@ s_arm_elf_cons (int nbytes)
   demand_empty_rest_of_line ();
 }
 
+#endif
+
 /* Emit an expression containing a 32-bit thumb instruction.
    Implementation based on put_thumb32_insn.  */
 
@@ -3742,6 +3744,8 @@ s_arm_elf_inst (int nbytes)
   input_line_pointer --;
   demand_empty_rest_of_line ();
 }
+
+#ifdef OBJ_ELF
 
 /* Parse a .rel31 directive.  */
 
@@ -4762,6 +4766,8 @@ const pseudo_typeS md_pseudo_table[] =
   { "tlsdescseq",	s_arm_tls_descseq,      0 },
 #else
   { "word",	   cons, 4},
+
+  { "inst",             s_arm_elf_inst, 0 },
 
   /* These are used for dwarf.  */
   {"2byte", cons, 2},
