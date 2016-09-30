@@ -3146,6 +3146,8 @@ s_ccs_endasmfunc (int unused ATTRIBUTE_UNUSED)
     as_bad (_(".endasmfunc pseudo-op only available with -mccs flag."));
 }
 
+#ifndef OBJ_COFF
+
 static void
 s_ccs_def (int name)
 {
@@ -3154,6 +3156,8 @@ s_ccs_def (int name)
   else
     as_bad (_(".def pseudo-op only available with -mccs flag."));
 }
+
+#endif
 
 /* Directives: Literal pools.  */
 
@@ -4777,7 +4781,10 @@ const pseudo_typeS md_pseudo_table[] =
 
   /* These are for compatibility with CodeComposer Studio.  */
   {"ref",          s_ccs_ref,        0},
+#ifndef OBJ_COFF
+  /* this conflicts with the COFF ".def" command */
   {"def",          s_ccs_def,        0},
+#endif
   {"asmfunc",      s_ccs_asmfunc,    0},
   {"endasmfunc",   s_ccs_endasmfunc, 0},
 
