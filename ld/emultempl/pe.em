@@ -98,7 +98,7 @@ fragment <<EOF
 #define DLL_SUPPORT
 #endif
 
-#if defined(TARGET_IS_i386pe)
+#if defined(TARGET_IS_i386pe) || defined(TARGET_IS_arm_wince_pe)
 #define DEFAULT_PSEUDO_RELOC_VERSION 2
 #else
 #define DEFAULT_PSEUDO_RELOC_VERSION 1
