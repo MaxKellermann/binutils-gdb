@@ -54,6 +54,10 @@
 # include "pathmax.h"
 # include "malloca.h"
 # include "dosname.h"
+#ifdef UNDER_CE
+#include <io.h>
+# define __getcwd getcwd
+#else
 # if HAVE_GETCWD
 #  if IN_RELOCWRAPPER
     /* When building the relocatable program wrapper, use the system's getcwd
@@ -70,8 +74,13 @@
 # else
 #  define __getcwd(buf, max) getwd (buf)
 # endif
+#endif /* !UNDER_CE */
 # define __readlink readlink
+#ifdef UNDER_CE
+# define __set_errno(e) do {} while (0)
+#else
 # define __set_errno(e) errno = (e)
+#endif
 # ifndef MAXSYMLINKS
 #  ifdef SYMLOOP_MAX
 #   define MAXSYMLINKS SYMLOOP_MAX

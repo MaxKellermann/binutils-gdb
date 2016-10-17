@@ -85,7 +85,7 @@ strerror (DWORD error)
 				NULL,
 				error,
 				0, /* Default language */
-				(LPVOID)&msgbuf,
+				(LPTSTR)&msgbuf,
 				0,
 				NULL);
   if (chars != 0)

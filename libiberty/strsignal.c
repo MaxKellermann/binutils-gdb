@@ -19,7 +19,9 @@
 #define sys_nsig sys_nsig__no_such_symbol
 
 #include <stdio.h>
+#ifndef UNDER_CE
 #include <signal.h>
+#endif
 
 /*  Routines imported from standard C runtime libraries. */
 

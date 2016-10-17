@@ -92,7 +92,9 @@
       || defined GNULIB_POSIXCHECK) \
      && ((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__))
 # include <io.h>     /* mingw32, mingw64 */
+#ifndef UNDER_CE
 # include <direct.h> /* mingw64, MSVC 9 */
+#endif
 #elif (@GNULIB_CLOSE@ || @GNULIB_DUP@ || @GNULIB_DUP2@ || @GNULIB_ISATTY@ \
        || @GNULIB_LSEEK@ || @GNULIB_READ@ || @GNULIB_UNLINK@ || @GNULIB_WRITE@ \
        || defined GNULIB_POSIXCHECK) \

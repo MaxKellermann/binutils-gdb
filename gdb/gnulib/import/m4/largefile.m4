@@ -108,6 +108,12 @@ AC_DEFUN([gl_LARGEFILE],
 [
   AC_REQUIRE([AC_CANONICAL_HOST])
   case "$host_os" in
+    mingw32ce)
+      dnl No 64 bit support for WinCE; it can't handle files that big anyway
+      WINDOWS_64_BIT_OFF_T=0
+      WINDOWS_64_BIT_ST_SIZE=0
+      ;;
+
     mingw*)
       dnl Native Windows.
       dnl mingw64 defines off_t to a 64-bit type already, if
