@@ -18,9 +18,11 @@ between calls to @code{getpwd}.
 
 #include <sys/types.h>
 
+#ifndef UNDER_CE
 #include <errno.h>
 #ifndef errno
 extern int errno;
+#endif
 #endif
 
 #ifdef HAVE_STDLIB_H

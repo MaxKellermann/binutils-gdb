@@ -81,9 +81,15 @@ fdwalk (int (*func) (void *, int), void *arg)
 	  char *tail;
 	  int result;
 
+#ifndef UNDER_CE
 	  errno = 0;
+#endif
 	  fd = strtol (entry->d_name, &tail, 10);
-	  if (*tail != '\0' || errno != 0)
+	  if (*tail != '\0'
+#ifndef UNDER_CE
+	      || errno != 0
+#endif
+	      )
 	    continue;
 	  if ((int) fd != fd)
 	    {
@@ -304,6 +310,7 @@ FILE *
 gdb_fopen_cloexec (const char *filename, const char *opentype)
 {
   FILE *result;
+#ifndef UNDER_CE
   /* Probe for "e" support once.  But, if we can tell the operating
      system doesn't know about close on exec mode "e" without probing,
      skip it.  E.g., the Windows runtime issues an "Invalid parameter
@@ -331,6 +338,7 @@ gdb_fopen_cloexec (const char *filename, const char *opentype)
 	}
     }
   else
+#endif
     result = fopen (filename, opentype);
 
   if (result != NULL)

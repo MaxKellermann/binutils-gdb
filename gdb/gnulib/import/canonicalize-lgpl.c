@@ -37,7 +37,9 @@
 # include <sys/param.h>
 #endif
 #include <sys/stat.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <stddef.h>
 
 #ifdef _LIBC
@@ -52,6 +54,10 @@
 # include "pathmax.h"
 # include "malloca.h"
 # include "dosname.h"
+#ifdef UNDER_CE
+#include <io.h>
+# define __getcwd getcwd
+#else
 # if HAVE_GETCWD
 #  if IN_RELOCWRAPPER
     /* When building the relocatable program wrapper, use the system's getcwd
@@ -68,8 +74,13 @@
 # else
 #  define __getcwd(buf, max) getwd (buf)
 # endif
+#endif /* !UNDER_CE */
 # define __readlink readlink
+#ifdef UNDER_CE
+# define __set_errno(e) do {} while (0)
+#else
 # define __set_errno(e) errno = (e)
+#endif
 # ifndef MAXSYMLINKS
 #  ifdef SYMLOOP_MAX
 #   define MAXSYMLINKS SYMLOOP_MAX
@@ -137,7 +148,9 @@ __realpath (const char *name, char *resolved)
         {
           /* It's easier to set errno to ENOMEM than to rely on the
              'malloc-posix' gnulib module.  */
+#ifndef UNDER_CE
           errno = ENOMEM;
+#endif
           return NULL;
         }
     }
@@ -240,7 +253,9 @@ __realpath (const char *name, char *resolved)
                 {
                   /* It's easier to set errno to ENOMEM than to rely on the
                      'realloc-posix' gnulib module.  */
+#ifndef UNDER_CE
                   errno = ENOMEM;
+#endif
                   goto error;
                 }
               rpath = new_rpath;
@@ -278,16 +293,22 @@ __realpath (const char *name, char *resolved)
               buf = malloca (path_max);
               if (!buf)
                 {
+#ifndef UNDER_CE
                   errno = ENOMEM;
+#endif
                   goto error;
                 }
 
               n = __readlink (rpath, buf, path_max - 1);
               if (n < 0)
                 {
+#ifndef UNDER_CE
                   int saved_errno = errno;
+#endif
                   freea (buf);
+#ifndef UNDER_CE
                   errno = saved_errno;
+#endif
                   goto error;
                 }
               buf[n] = '\0';
@@ -298,7 +319,9 @@ __realpath (const char *name, char *resolved)
                   if (!extra_buf)
                     {
                       freea (buf);
+#ifndef UNDER_CE
                       errno = ENOMEM;
+#endif
                       goto error;
                     }
                 }
@@ -365,12 +388,16 @@ __realpath (const char *name, char *resolved)
 
 error:
   {
+#ifndef UNDER_CE
     int saved_errno = errno;
+#endif
     if (extra_buf)
       freea (extra_buf);
     if (resolved == NULL)
       free (rpath);
+#ifndef UNDER_CE
     errno = saved_errno;
+#endif
   }
   return NULL;
 }

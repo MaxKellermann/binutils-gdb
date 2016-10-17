@@ -53,7 +53,9 @@ control over the state of the random number generator.
 
 */
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 #if 0
 
@@ -267,7 +269,9 @@ initstate (unsigned int seed, PTR arg_state, unsigned long n)
     {
       if (n < BREAK_0)
 	{
+#ifndef UNDER_CE
 	  errno = EINVAL;
+#endif
 	  return NULL;
 	}
       rand_type = TYPE_0;
@@ -346,7 +350,9 @@ setstate (PTR arg_state)
       break;
     default:
       /* State info munged.  */
+#ifndef UNDER_CE
       errno = EINVAL;
+#endif
       return NULL;
     }
 

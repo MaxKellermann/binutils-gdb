@@ -568,7 +568,7 @@ create_process (const char *program, char *args,
   wchar_t *p, *wprogram, *wargs;
   size_t argslen;
 
-  wprogram = alloca ((strlen (program) + 1) * sizeof (wchar_t));
+  wprogram = (wchar_t *) alloca ((strlen (program) + 1) * sizeof (wchar_t));
   mbstowcs (wprogram, program, strlen (program) + 1);
 
   for (p = wprogram; *p; ++p)
@@ -576,7 +576,7 @@ create_process (const char *program, char *args,
       *p = L'\\';
 
   argslen = strlen (args);
-  wargs = alloca ((argslen + 1) * sizeof (wchar_t));
+  wargs = (wchar_t *) alloca ((argslen + 1) * sizeof (wchar_t));
   mbstowcs (wargs, args, argslen + 1);
 
   ret = CreateProcessW (wprogram, /* image name */
@@ -1064,7 +1064,7 @@ get_image_name (HANDLE h, void *address, int unicode)
 #ifdef _WIN32_WCE
   /* Windows CE reports the address of the image name,
      instead of an address of a pointer into the image name.  */
-  address_ptr = address;
+  address_ptr = (char *) address;
 #else
   /* See if we could read the address of a string, and that the
      address isn't null. */

@@ -15,6 +15,9 @@ AC_DEFUN([gl_WCTYPE_H],
   AC_REQUIRE([AC_PROG_CC])
   AC_REQUIRE([AC_CANONICAL_HOST])
   AC_CHECK_FUNCS_ONCE([iswcntrl])
+  if test $host_os = mingw32ce; then
+    ac_cv_func_iswcntrl=yes
+  fi
   if test $ac_cv_func_iswcntrl = yes; then
     HAVE_ISWCNTRL=1
   else

@@ -116,7 +116,9 @@ mbsrtowcs (wchar_t *dest, const char **srcp, size_t len, mbstate_t *ps)
    bad_input:
     *srcp = src;
    bad_input2:
+#ifndef UNDER_CE
     errno = EILSEQ;
+#endif
     return (size_t)(-1);
   }
 }

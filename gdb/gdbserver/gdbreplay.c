@@ -32,7 +32,9 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -83,7 +85,7 @@ strerror (DWORD error)
 				NULL,
 				error,
 				0, /* Default language */
-				(LPVOID)&msgbuf,
+				(LPTSTR)&msgbuf,
 				0,
 				NULL);
   if (chars != 0)

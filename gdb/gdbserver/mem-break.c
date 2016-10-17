@@ -573,7 +573,11 @@ delete_fast_tracepoint_jump (struct fast_tracepoint_jump *todel)
     }
 
   warning ("Could not find fast tracepoint jump in list.");
+#ifdef UNDER_CE
+  return -1;
+#else
   return ENOENT;
+#endif
 }
 
 void
@@ -847,7 +851,11 @@ delete_raw_breakpoint (struct process_info *proc, struct raw_breakpoint *todel)
     }
 
   warning ("Could not find raw breakpoint in list.");
+#ifdef UNDER_CE
+  return -1;
+#else
   return ENOENT;
+#endif
 }
 
 static int
@@ -901,7 +909,11 @@ delete_breakpoint_1 (struct process_info *proc, struct breakpoint *todel)
     }
 
   warning ("Could not find breakpoint in list.");
+#ifdef UNDER_CE
+  return -1;
+#else
   return ENOENT;
+#endif
 }
 
 int

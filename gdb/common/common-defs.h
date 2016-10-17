@@ -49,7 +49,9 @@
 #include <stdint.h>
 
 #include <string.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <alloca.h>
 
 #include "ansidecl.h"

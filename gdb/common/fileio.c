@@ -27,6 +27,7 @@
 int
 host_to_fileio_error (int error)
 {
+#ifndef UNDER_CE
   switch (error)
     {
       case EPERM:
@@ -72,6 +73,7 @@ host_to_fileio_error (int error)
       case ENAMETOOLONG:
         return FILEIO_ENAMETOOLONG;
     }
+#endif
   return FILEIO_EUNKNOWN;
 }
 
