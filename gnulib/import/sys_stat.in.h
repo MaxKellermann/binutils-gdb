@@ -59,7 +59,9 @@
    in <io.h> and/or <direct.h>, not in <unistd.h>.  */
 #if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
 # include <io.h>     /* mingw32, mingw64 */
+#ifndef UNDER_CE
 # include <direct.h> /* mingw64, MSVC 9 */
+#endif
 #endif
 
 /* Native Windows platforms declare umask() in <io.h>.  */

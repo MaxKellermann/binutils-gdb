@@ -32,6 +32,7 @@
 # define DARWIN7 /* Darwin 7 or newer, i.e. Mac OS X 10.3 or newer */
 #endif
 
+#ifndef UNDER_CE
 #if defined _WIN32 || defined __WIN32__
 # define WINDOWS_NATIVE
 # include <locale.h>
@@ -64,6 +65,7 @@
 #if defined OS2
 # define INCL_DOS
 # include <os2.h>
+#endif
 #endif
 
 /* For MB_CUR_MAX_L */
