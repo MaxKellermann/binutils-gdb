@@ -126,6 +126,7 @@ gdb_signal_from_host (int hostsig)
 
   /* SIGINT, SIGILL, SIGABRT, SIGFPE, SIGSEGV and SIGTERM
      are ANSI-standard signals and are always available.  */
+#ifndef UNDER_CE
   if (hostsig == SIGINT)
     return GDB_SIGNAL_INT;
   if (hostsig == SIGILL)
@@ -138,6 +139,7 @@ gdb_signal_from_host (int hostsig)
     return GDB_SIGNAL_SEGV;
   if (hostsig == SIGTERM)
     return GDB_SIGNAL_TERM;
+#endif
 
   /* All other signals need preprocessor conditionals.  */
 #if defined (SIGHUP)
@@ -383,6 +385,7 @@ do_gdb_signal_to_host (enum gdb_signal oursig,
 
       /* SIGINT, SIGILL, SIGABRT, SIGFPE, SIGSEGV and SIGTERM
 	 are ANSI-standard signals and are always available.  */
+#ifndef UNDER_CE
     case GDB_SIGNAL_INT:
       return SIGINT;
     case GDB_SIGNAL_ILL:
@@ -395,6 +398,7 @@ do_gdb_signal_to_host (enum gdb_signal oursig,
       return SIGSEGV;
     case GDB_SIGNAL_TERM:
       return SIGTERM;
+#endif
 
       /* All other signals need preprocessor conditionals.  */
 #if defined (SIGHUP)

@@ -8532,6 +8532,11 @@ fi
 
 
   case "$host_os" in
+    mingw32ce)
+            WINDOWS_64_BIT_OFF_T=0
+      WINDOWS_64_BIT_ST_SIZE=0
+      ;;
+
     mingw*)
                         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for 64-bit off_t" >&5
 $as_echo_n "checking for 64-bit off_t... " >&6; }
@@ -23348,6 +23353,9 @@ fi
 
 
 
+  if test $host_os = mingw32ce; then
+    ac_cv_func_iswcntrl=yes
+  fi
   if test $ac_cv_func_iswcntrl = yes; then
     HAVE_ISWCNTRL=1
   else
