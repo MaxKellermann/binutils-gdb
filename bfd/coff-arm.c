@@ -1302,6 +1302,8 @@ coff_arm_relocate_section (bfd *output_bfd,
 	  else
 	    {
 	      sec = sections[symndx];
+	      if (sec->kept_section != NULL)
+		      sec = sec->kept_section;
 	      val = (sec->output_section->vma
 		     + sec->output_offset
 		     + sym->n_value
