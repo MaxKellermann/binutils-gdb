@@ -81,6 +81,8 @@ Boston, MA 02110-1301, USA.  */
 #endif
 #endif
 
+#ifndef UNDER_CE
+
 /*
 
 @deftypefn Replacement long get_run_time (void)
@@ -118,3 +120,5 @@ get_run_time (void)
 #endif  /* HAVE_TIMES */
 #endif  /* HAVE_GETRUSAGE */
 }
+
+#endif
