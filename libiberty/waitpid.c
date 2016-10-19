@@ -19,6 +19,8 @@ does the return value.  The third argument is unused in @libib{}.
    to get the definition of "pid_t" before you include <sys/wait.h>.  */
 #include <sys/types.h>
 
+#ifndef UNDER_CE
+
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
@@ -38,3 +40,5 @@ waitpid (pid_t pid, int *stat_loc, int options ATTRIBUTE_UNUSED)
 	return wpid;
     }
 }
+
+#endif
