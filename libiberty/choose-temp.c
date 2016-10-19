@@ -56,6 +56,8 @@ not recommended.
 
 */
 
+#ifndef UNDER_CE
+
 char *
 choose_temp_base (void)
 {
@@ -72,3 +74,5 @@ choose_temp_base (void)
     abort ();
   return temp_filename;
 }
+
+#endif
