@@ -50,6 +50,8 @@ components will be simplified.  The returned value will be allocated using
 #include <string.h>
 #endif
 
+#ifndef UNDER_CE
+
 /* On GNU libc systems the declaration is only visible with _GNU_SOURCE.  */
 #if defined(HAVE_CANONICALIZE_FILE_NAME) \
     && defined(NEED_DECLARATION_CANONICALIZE_FILE_NAME)
@@ -155,3 +157,5 @@ lrealpath (const char *filename)
   /* This system is a lost cause, just duplicate the filename.  */
   return strdup (filename);
 }
+
+#endif
