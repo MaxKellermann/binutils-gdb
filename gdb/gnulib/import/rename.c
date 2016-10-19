@@ -194,11 +194,18 @@ rpl_rename (char const *src, char const *dst)
       free (dst_temp);
     }
 
+#ifdef UNICODE
+  wchar_t srcw[MAX_PATH + 1]; mbstowcs(srcw, src, MAX_PATH);
+  wchar_t dstw[MAX_PATH + 1]; mbstowcs(dstw, dst, MAX_PATH);
+#else
+  const char *srcw = src, *dstw = dst;
+#endif
+
   /* MoveFileEx works if SRC is a directory without any flags, but
      fails with MOVEFILE_REPLACE_EXISTING, so try without flags first.
      Thankfully, MoveFileEx handles hard links correctly, even though
      rename() does not.  */
-  if (MoveFileEx (src, dst, 0))
+  if (MoveFileEx (srcw, dstw, 0))
     return 0;
 
   /* Retry with MOVEFILE_REPLACE_EXISTING if the move failed
@@ -206,7 +213,7 @@ rpl_rename (char const *src, char const *dst)
   error = GetLastError ();
   if (error == ERROR_FILE_EXISTS || error == ERROR_ALREADY_EXISTS)
     {
-      if (MoveFileEx (src, dst, MOVEFILE_REPLACE_EXISTING))
+      if (MoveFileEx (srcw, dstw, MOVEFILE_REPLACE_EXISTING))
         return 0;
 
       error = GetLastError ();
