@@ -32,7 +32,7 @@ directory's path doesn't fit in @var{len} characters, the result is
 #include <stdlib.h>
 #endif
 
-extern char *getwd ();
+extern char *getwd (char *buf);
 #ifndef UNDER_CE
 extern int errno;
 #endif
