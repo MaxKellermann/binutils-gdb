@@ -632,7 +632,7 @@ next call to @code{strerror}.
 char *
 strerror (int errnoval)
 {
-  const char *msg;
+  char *msg;
   static char buf[32];
 
 #ifndef HAVE_SYS_ERRLIST
