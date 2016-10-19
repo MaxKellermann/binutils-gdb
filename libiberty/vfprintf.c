@@ -8,8 +8,12 @@
 #include <stdio.h>
 #undef vfprintf
 
+#ifndef UNDER_CE
+
 int
 vfprintf (FILE *stream, const char *format, va_list ap)
 {
   return _doprnt (format, ap, stream);
 }
+
+#endif

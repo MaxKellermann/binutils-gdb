@@ -31,6 +31,7 @@ the executable file might be covered by the GNU General Public License. */
 #include <stdio.h>
 #undef vsprintf
 
+#ifndef UNDER_CE
 #if defined _IOSTRG && defined _IOWRT
 
 int
@@ -53,4 +54,5 @@ vsprintf (char *buf, const char *format, va_list ap)
 
 }
 
+#endif
 #endif

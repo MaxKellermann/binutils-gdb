@@ -21,8 +21,13 @@ nonstandard but common function @code{_doprnt}.
 #include <stdarg.h>
 #include <stdio.h>
 #undef vprintf
+
+#ifndef UNDER_CE
+
 int
 vprintf (const char *format, va_list ap)
 {
   return vfprintf (stdout, format, ap);
 }
+
+#endif
