@@ -205,8 +205,12 @@ FCT (const CHAR *pattern, const CHAR *string, const CHAR *string_end,
             CHAR cold;
             UCHAR fn;
 
+#ifdef UNDER_CE
+	    posixly_correct = -1;
+#else
             if (posixly_correct == 0)
               posixly_correct = getenv ("POSIXLY_CORRECT") != NULL ? 1 : -1;
+#endif
 
             if (n == string_end)
               return FNM_NOMATCH;
@@ -995,8 +999,12 @@ END (const CHAR *pattern)
     else if (*p == L_('['))
       {
         /* Handle brackets special.  */
+#ifdef UNDER_CE
+	posixly_correct = -1;
+#else
         if (posixly_correct == 0)
           posixly_correct = getenv ("POSIXLY_CORRECT") != NULL ? 1 : -1;
+#endif
 
         /* Skip the not sign.  We have to recognize it because of a possibly
            following ']'.  */
@@ -1048,8 +1056,12 @@ EXT (INT opt, const CHAR *pattern, const CHAR *string, const CHAR *string_end,
     else if (*p == L_('['))
       {
         /* Handle brackets special.  */
+#ifdef UNDER_CE
+	    posixly_correct = -1;
+#else
         if (posixly_correct == 0)
           posixly_correct = getenv ("POSIXLY_CORRECT") != NULL ? 1 : -1;
+#endif
 
         /* Skip the not sign.  We have to recognize it because of a possibly
            following ']'.  */
