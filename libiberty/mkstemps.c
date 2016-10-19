@@ -42,6 +42,10 @@
 #endif
 #include "ansidecl.h"
 
+#ifdef UNDER_CE
+#include <windows.h>
+#endif
+
 /* We need to provide a type for gcc_uint64_t.  */
 #ifdef __GNUC__
 __extension__ typedef unsigned long long gcc_uint64_t;
@@ -104,7 +108,12 @@ mkstemps (char *pattern, int suffix_len)
 #ifdef HAVE_GETTIMEOFDAY
   /* Get some more or less random data.  */
   gettimeofday (&tv, NULL);
-  value += ((gcc_uint64_t) tv.tv_usec << 16) ^ tv.tv_sec ^ getpid ();
+#ifdef UNDER_CE
+  const gcc_uint64_t pid = GetCurrentProcessId();
+#else
+  const gcc_uint64_t pid = getpid();
+#endif
+  value += ((gcc_uint64_t) tv.tv_usec << 16) ^ tv.tv_sec ^ pid;
 #else
   value += getpid ();
 #endif
