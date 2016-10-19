@@ -840,9 +840,12 @@ locale_charset (void)
      environment variables (if present) or the codepage as a number.  */
   if (codeset != NULL && strcmp (codeset, "US-ASCII") == 0)
     {
+#ifndef UNDER_CE
       const char *locale;
+#endif
       static char buf[2 + 10 + 1];
 
+#ifndef UNDER_CE
       locale = getenv ("LC_ALL");
       if (locale == NULL || locale[0] == '\0')
         {
@@ -873,6 +876,7 @@ locale_charset (void)
                 }
             }
         }
+#endif
 
       /* The Windows API has a function returning the locale's codepage as a
          number: GetACP().  This encoding is used by Cygwin, unless the user
