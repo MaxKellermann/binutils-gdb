@@ -53,6 +53,8 @@ components will be simplified.  The returned value will be allocated using
 #include <fcntl.h>
 #endif
 
+#ifndef UNDER_CE
+
 /* On GNU libc systems the declaration is only visible with _GNU_SOURCE.  */
 #if defined(HAVE_CANONICALIZE_FILE_NAME) \
     && defined(NEED_DECLARATION_CANONICALIZE_FILE_NAME)
@@ -171,3 +173,5 @@ is_valid_fd (int fd)
   return fcntl (fd, F_GETFD) >= 0;
 #endif
 }
+
+#endif
