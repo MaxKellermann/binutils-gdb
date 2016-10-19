@@ -976,7 +976,13 @@ static int
 pex_win32_pipe (struct pex_obj *obj ATTRIBUTE_UNUSED, int *p,
 		int binary)
 {
+#ifdef UNDER_CE
+  (void)p;
+  (void)binary;
+  return -1;
+#else
   return _pipe (p, 256, (binary ? _O_BINARY : _O_TEXT) | _O_NOINHERIT);
+#endif
 }
 
 /* Get a FILE pointer to read from a file descriptor.  */
