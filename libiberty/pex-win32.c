@@ -512,8 +512,15 @@ find_executable (const char *program, BOOL search)
 	  /* Add the new one.  */
 	  strcat (full_executable, *ext);
 
+#ifdef UNICODE
+	  wchar_t w[MAX_PATH + 1];
+	  mbstowcs(w, full_executable, MAX_PATH);
+#else
+	  const char *w = full_executable;
+#endif
+
 	  /* Attempt to open this file.  */
-	  h = CreateFile (full_executable, GENERIC_READ,
+	  h = CreateFile (w, GENERIC_READ,
 			  FILE_SHARE_READ | FILE_SHARE_WRITE,
 			  0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	  if (h != INVALID_HANDLE_VALUE)
@@ -629,9 +636,18 @@ win32_spawn (const char *executable,
   cmdline = argv_to_cmdline (argv);
   if (!cmdline)
     goto error;
+
+#ifdef UNICODE
+  wchar_t full_executable_w[MAX_PATH + 1], cmdline_w[MAX_PATH + 1];
+  mbstowcs(full_executable_w, full_executable, MAX_PATH);
+  mbstowcs(cmdline_w, cmdline, MAX_PATH);
+#else
+  const char *full_executable_w = full_executable;
+  const char *cmdline_w = cmdline;
+#endif
     
   /* Create the child process.  */  
-  if (!CreateProcess (full_executable, cmdline, 
+  if (!CreateProcess (full_executable_w, cmdline_w,
 		      /*lpProcessAttributes=*/NULL,
 		      /*lpThreadAttributes=*/NULL,
 		      /*bInheritHandles=*/TRUE,
@@ -818,7 +834,7 @@ pex_win32_exec_child (struct pex_obj *obj ATTRIBUTE_UNUSED, int flags,
       HANDLE conout_handle;
 
       /* Determine whether or not we have an associated console.  */
-      conout_handle = CreateFile("CONOUT$", 
+      conout_handle = CreateFile(TEXT("CONOUT$"),
 				 GENERIC_WRITE,
 				 FILE_SHARE_WRITE,
 				 /*lpSecurityAttributes=*/NULL,

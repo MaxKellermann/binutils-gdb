@@ -147,6 +147,16 @@ choose_tmpdir (void)
       tmpdir[len] = DIR_SEPARATOR;
       tmpdir[len+1] = '\0';
       memoized_tmpdir = tmpdir;
+#elif defined(UNICODE)
+      wchar_t w[MAX_PATH];
+      if (GetTempPath(MAX_PATH, w)) {
+	      size_t length = wcstombs(NULL, w, 0);
+	      if (length != (size_t)-1) {
+		      ++length;
+		      memoized_tmpdir = XNEWVEC (char, length);
+		      wcstombs(memoized_tmpdir, w, length);
+	      }
+      }
 #else /* defined(_WIN32) && !defined(__CYGWIN__) */
       DWORD len;
 
