@@ -409,7 +409,9 @@ _getopt_initialize (int argc ATTRIBUTE_UNUSED,
 
   nextchar = NULL;
 
+#ifndef UNDER_CE
   posixly_correct = getenv ("POSIXLY_CORRECT");
+#endif
 
   /* Determine how to handle the ordering of options and nonoptions.  */
 

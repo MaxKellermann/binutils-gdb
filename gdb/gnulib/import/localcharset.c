@@ -137,8 +137,10 @@ get_charset_aliases (void)
 
       /* Make it possible to override the charset.alias location.  This is
          necessary for running the testsuite before "make install".  */
+#ifndef UNDER_CE
       dir = getenv ("CHARSETALIASDIR");
       if (dir == NULL || dir[0] == '\0')
+#endif
         dir = relocate (LIBDIR);
 
       /* Concatenate dir and base into freshly allocated file_name.  */
@@ -410,9 +412,12 @@ locale_charset (void)
      environment variables (if present) or the codepage as a number.  */
   if (codeset != NULL && strcmp (codeset, "US-ASCII") == 0)
     {
+#ifndef UNDER_CE
       const char *locale;
+#endif
       static char buf[2 + 10 + 1];
 
+#ifndef UNDER_CE
       locale = getenv ("LC_ALL");
       if (locale == NULL || locale[0] == '\0')
         {
@@ -443,6 +448,7 @@ locale_charset (void)
                 }
             }
         }
+#endif
 
       /* The Windows API has a function returning the locale's codepage as a
          number: GetACP().  This encoding is used by Cygwin, unless the user
@@ -465,6 +471,7 @@ locale_charset (void)
   /* On old systems which lack it, use setlocale or getenv.  */
   const char *locale = NULL;
 
+#ifndef UNDER_CE
   /* But most old systems don't have a complete set of locales.  Some
      (like SunOS 4 or DJGPP) have only the C locale.  Therefore we don't
      use setlocale here; it would return "C" when it doesn't support the
@@ -482,6 +489,7 @@ locale_charset (void)
             locale = getenv ("LANG");
         }
     }
+#endif
 
   /* On some old systems, one used to set locale = "iso8859_1". On others,
      you set it to "language_COUNTRY.charset". In any case, we resolve it
