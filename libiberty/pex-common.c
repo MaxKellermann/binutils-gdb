@@ -39,6 +39,10 @@ extern int errno;
 #include <unistd.h>
 #endif
 
+#ifdef UNICODE
+#include <windows.h>
+#endif
+
 extern int mkstemps (char *, int);
 
 /* This file contains subroutines for the program execution routines
@@ -657,7 +661,13 @@ pex_free (struct pex_obj *obj)
 
       for (i = 0; i < obj->remove_count; ++i)
 	{
+#ifdef UNICODE
+		wchar_t w[MAX_PATH + 1];
+		mbstowcs(w, obj->remove[i], MAX_PATH);
+		DeleteFile(w);
+#else
 	  remove (obj->remove[i]);
+#endif
 	  free (obj->remove[i]);
 	}
       free (obj->remove);
