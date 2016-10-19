@@ -69,6 +69,10 @@ extern char *alloca ();
 int
 putenv (const char *string)
 {
+#ifdef UNDER_CE
+  (void)string;
+  return -1;
+#else
   const char *const name_end = strchr (string, '=');
 
   if (name_end)
@@ -81,4 +85,5 @@ putenv (const char *string)
 
   unsetenv (string);
   return 0;
+#endif
 }
