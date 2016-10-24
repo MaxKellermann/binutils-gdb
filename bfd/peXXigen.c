@@ -2240,7 +2240,7 @@ pe_print_reloc (bfd * abfd, void * vfile)
 	       _("\nVirtual Address: %08lx Chunk size %ld (0x%lx) Number of fixups %ld\n"),
 	       (unsigned long) virtual_address, size, size, number);
 
-      chunk_end = p + size;
+      chunk_end = p + size - 8;
       if (chunk_end > end)
 	chunk_end = end;
       j = 0;
