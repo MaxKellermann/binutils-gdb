@@ -21,7 +21,9 @@ Boston, MA 02110-1301, USA.  */
 #include "libiberty.h"
 #include "simple-object.h"
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 /* mingw.org's MinGW doesn't have ENOTSUP.  */
 #ifndef ENOTSUP
 # define ENOTSUP ENOSYS

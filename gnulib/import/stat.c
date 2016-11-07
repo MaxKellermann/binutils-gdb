@@ -53,7 +53,9 @@ orig_stat (const char *filename, struct stat *buf)
 
 #include "stat-time.h"
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <limits.h>
 #include <stdbool.h>
 #include <string.h>
@@ -421,7 +423,9 @@ rpl_stat (char const *name, struct stat *buf)
           size_t len = strlen (name);
           if (ISSLASH (name[len - 1]))
             {
+#ifndef UNDER_CE
               errno = ENOTDIR;
+#endif
               return -1;
             }
         }
