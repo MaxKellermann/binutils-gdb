@@ -133,11 +133,14 @@ rpl_rename (char const *src, char const *dst)
      damage was done.  */
   if (dst_exists && S_ISDIR (dst_st.st_mode))
     {
+#ifndef UNDER_CE
       char *cwd = getcwd (NULL, 0);
       char *src_temp;
       char *dst_temp;
       if (!cwd || chdir (cwd))
+#endif
         return -1;
+#ifndef UNDER_CE
       if (IS_ABSOLUTE_FILE_NAME (src))
         {
           dst_temp = chdir (dst) ? NULL : getcwd (NULL, 0);
@@ -192,6 +195,7 @@ rpl_rename (char const *src, char const *dst)
         }
       free (src_temp);
       free (dst_temp);
+#endif
     }
 
 #ifdef UNICODE
