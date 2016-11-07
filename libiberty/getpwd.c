@@ -118,12 +118,14 @@ getpwd (void)
 {
   static char *pwd = 0;
 
+#ifndef UNDER_CE
   if (!pwd)
     pwd = getcwd (XNEWVEC (char, MAXPATHLEN + 1), MAXPATHLEN + 1
 #ifdef VMS
 		  , 0
 #endif
 		  );
+#endif
   return pwd;
 }
 
