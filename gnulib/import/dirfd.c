@@ -20,7 +20,9 @@
 #include <config.h>
 
 #include <dirent.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 #ifdef __KLIBC__
 # include <stdlib.h>
@@ -79,6 +81,7 @@ int
 dirfd (DIR *dir_p)
 {
   int fd = DIR_TO_FD (dir_p);
+#ifndef UNDER_CE
   if (fd == -1)
 #ifndef __KLIBC__
     errno = ENOTSUP;
@@ -93,6 +96,6 @@ dirfd (DIR *dir_p)
       errno = EINVAL;
     }
 #endif
-
+#endif
   return fd;
 }

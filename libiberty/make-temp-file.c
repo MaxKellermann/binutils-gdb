@@ -23,7 +23,9 @@ Boston, MA 02110-1301, USA.  */
 
 #include <stdio.h>	/* May get P_tmpdir.  */
 #include <sys/types.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -212,7 +214,13 @@ make_temp_file_with_prefix (const char *prefix, const char *suffix)
   if (fd == -1)
     {
       fprintf (stderr, "Cannot create temporary file in %s: %s\n",
-	       base, strerror (errno));
+	       base,
+#ifdef UNDER_CE
+	       "unkown error"
+#else
+	       strerror (errno)
+#endif
+	       );
       abort ();
     }
   /* We abort on failed close out of sheer paranoia.  */

@@ -18,7 +18,9 @@ be the value @code{1}).
 #include <ansidecl.h>
 /* Including <sys/types.h> seems to be needed by ISC. */
 #include <sys/types.h>
+#ifndef UNDER_CE
 #include <signal.h>
+#endif
 
 extern void abort (void) ATTRIBUTE_NORETURN;
 

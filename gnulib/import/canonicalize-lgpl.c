@@ -37,7 +37,9 @@
 # include <sys/param.h>
 #endif
 #include <sys/stat.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <stddef.h>
 
 #ifdef _LIBC
@@ -297,7 +299,9 @@ __realpath (const char *name, char *resolved)
               n = __readlink (rpath, buf, path_max - 1);
               if (n < 0)
                 {
+#ifndef UNDER_CE
                   int saved_errno = errno;
+#endif
                   freea (buf);
                   __set_errno (saved_errno);
                   goto error;
@@ -378,7 +382,9 @@ __realpath (const char *name, char *resolved)
 
 error:
   {
+#ifndef UNDER_CE
     int saved_errno = errno;
+#endif
     if (extra_buf)
       freea (extra_buf);
     if (resolved == NULL)

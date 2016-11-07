@@ -54,7 +54,9 @@ orig_stat (const char *filename, struct stat *buf)
    above.  */
 #include "sys/stat.h"
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <limits.h>
 #include <stdbool.h>
 #include <string.h>
@@ -95,7 +97,11 @@ rpl_stat (char const *name, struct stat *st)
 #endif /* REPLACE_FUNC_STAT_FILE */
 #if REPLACE_FUNC_STAT_DIR
 
-  if (result == -1 && errno == ENOENT)
+  if (result == -1
+#ifndef UNDER_CE
+      && errno == ENOENT
+#endif
+      )
     {
       /* Due to mingw's oddities, there are some directories (like
          c:\) where stat() only succeeds with a trailing slash, and
@@ -111,7 +117,11 @@ rpl_stat (char const *name, struct stat *st)
       bool check_dir = false;
       verify (PATH_MAX <= 4096);
       if (PATH_MAX <= len)
+#ifdef UNDER_CE
+	{}
+#else
         errno = ENAMETOOLONG;
+#endif
       else if (len)
         {
           strcpy (fixed_name, name);
@@ -129,7 +139,9 @@ rpl_stat (char const *name, struct stat *st)
           if (result == 0 && check_dir && !S_ISDIR (st->st_mode))
             {
               result = -1;
+#ifndef UNDER_CE
               errno = ENOTDIR;
+#endif
             }
         }
     }

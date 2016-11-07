@@ -30,7 +30,9 @@
 
 #include <stdlib.h>
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 /* Allocate an N-byte block of memory from the heap.
    If N is zero, allocate a 1-byte block.  */
@@ -48,8 +50,10 @@ rpl_malloc (size_t n)
   result = malloc (n);
 
 #if !HAVE_MALLOC_POSIX
+#ifndef UNDER_CE
   if (result == NULL)
     errno = ENOMEM;
+#endif
 #endif
 
   return result;
