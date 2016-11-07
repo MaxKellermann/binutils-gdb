@@ -505,7 +505,9 @@ handle_btrace_conf_general_set (char *own_buf)
       unsigned long size;
       char *endp = NULL;
 
+#ifndef UNDER_CE
       errno = 0;
+#endif
       size = strtoul (op + strlen ("bts:size="), &endp, 16);
       if (endp == NULL || *endp != 0 || errno != 0 || size > UINT_MAX)
 	{
@@ -520,7 +522,9 @@ handle_btrace_conf_general_set (char *own_buf)
       unsigned long size;
       char *endp = NULL;
 
+#ifndef UNDER_CE
       errno = 0;
+#endif
       size = strtoul (op + strlen ("pt:size="), &endp, 16);
       if (endp == NULL || *endp != 0 || errno != 0 || size > UINT_MAX)
 	{
@@ -1015,7 +1019,11 @@ static int
 gdb_write_memory (CORE_ADDR memaddr, const unsigned char *myaddr, int len)
 {
   if (current_traceframe >= 0)
+#ifdef UNDER_CE
+    return -1;
+#else
     return EIO;
+#endif
   else
     {
       int ret;
@@ -1026,7 +1034,11 @@ gdb_write_memory (CORE_ADDR memaddr, const unsigned char *myaddr, int len)
 	  if (set_desired_thread ())
 	    ret = write_inferior_memory (memaddr, myaddr, len);
 	  else
+#ifdef UNDER_CE
+	    ret = -1;
+#else
 	    ret = EIO;
+#endif
 	  done_accessing_memory ();
 	}
       return ret;

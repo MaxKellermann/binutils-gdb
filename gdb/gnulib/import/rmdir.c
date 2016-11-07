@@ -20,7 +20,9 @@
 
 #include <unistd.h>
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <string.h>
 
 #include "dosname.h"
@@ -40,14 +42,18 @@ rpl_rmdir (char const *dir)
     len--;
   if (len && dir[len - 1] == '.' && (1 == len || ISSLASH (dir[len - 2])))
     {
+#ifndef UNDER_CE
       errno = EINVAL;
+#endif
       return -1;
     }
   result = rmdir (dir);
   /* Work around mingw bug, where rmdir("file/") fails with EINVAL
      instead of ENOTDIR.  We've already filtered out trailing ., the
      only reason allowed by POSIX for EINVAL.  */
+#ifndef UNDER_CE
   if (result == -1 && errno == EINVAL)
     errno = ENOTDIR;
+#endif
   return result;
 }

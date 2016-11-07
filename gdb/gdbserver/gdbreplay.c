@@ -32,7 +32,9 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

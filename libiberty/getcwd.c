@@ -22,7 +22,9 @@ directory's path doesn't fit in @var{len} characters, the result is
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -31,7 +33,9 @@ directory's path doesn't fit in @var{len} characters, the result is
 #endif
 
 extern char *getwd ();
+#ifndef UNDER_CE
 extern int errno;
+#endif
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 1024
@@ -46,13 +50,17 @@ getcwd (char *buf, size_t len)
   result = getwd (ourbuf);
   if (result) {
     if (strlen (ourbuf) >= len) {
+#ifndef UNDER_CE
       errno = ERANGE;
+#endif
       return 0;
     }
     if (!buf) {
        buf = (char*)malloc(len);
        if (!buf) {
+#ifndef UNDER_CE
            errno = ENOMEM;
+#endif
 	   return 0;
        }
     }

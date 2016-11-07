@@ -34,8 +34,10 @@ safe_strerror (int errnum)
   static char *buffer;
   int len;
 
+#ifndef UNDER_CE
   if (errnum >= 0 && errnum < sys_nerr)
     return strerror (errnum);
+#endif
 
   if (buffer)
     {
