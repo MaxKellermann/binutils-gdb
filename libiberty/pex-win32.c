@@ -40,9 +40,13 @@ Boston, MA 02110-1301, USA.  */
 #include <process.h>
 #include <io.h>
 #include <fcntl.h>
+#ifndef UNDER_CE
 #include <signal.h>
+#endif
 #include <sys/stat.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <ctype.h>
 
 /* mingw32 headers may not define the following.  */
@@ -667,7 +671,9 @@ spawn_script (const char *executable, char *const *argv,
 	      LPPROCESS_INFORMATION pi)
 {
   pid_t pid = (pid_t) -1;
+#ifndef UNDER_CE
   int save_errno = errno;
+#endif
   int fd = _open (executable, _O_RDONLY);
 
   /* Try to open script, check header format, extract interpreter path,
@@ -744,8 +750,10 @@ spawn_script (const char *executable, char *const *argv,
 	    }
 	}
     }
+#ifndef UNDER_CE
   if (pid == (pid_t) -1)
     errno = save_errno;
+#endif
   return pid;
 }
 
@@ -855,7 +863,11 @@ pex_win32_exec_child (struct pex_obj *obj ATTRIBUTE_UNUSED, int flags,
                         &si, &pi);
   if (pid == (pid_t) -1)
     {
+#ifdef UNDER_CE
+      *err = -1;
+#else
       *err = ENOENT;
+#endif
       *errmsg = "CreateProcess";
     }
 
@@ -912,7 +924,11 @@ pex_win32_wait (struct pex_obj *obj ATTRIBUTE_UNUSED, pid_t pid,
   if (WaitForSingleObject (h, INFINITE) != WAIT_OBJECT_0)
     {
       CloseHandle (h);
+#ifdef UNDER_CE
+      *err = -1;
+#else
       *err = ECHILD;
+#endif
       *errmsg = "WaitForSingleObject";
       return -1;
     }
@@ -924,7 +940,11 @@ pex_win32_wait (struct pex_obj *obj ATTRIBUTE_UNUSED, pid_t pid,
      which one.  Since only SIGABRT, SIGFPE and SIGINT do anything, we
      report SIGABRT.  */
   if (termstat == 3)
+#ifdef UNDER_CE
+    *status = 6;
+#else
     *status = SIGABRT;
+#endif
   else
     *status = (termstat & 0xff) << 8;
 

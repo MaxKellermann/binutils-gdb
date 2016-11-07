@@ -21,7 +21,9 @@ Boston, MA 02110-1301, USA.  */
 #include "libiberty.h"
 #include "simple-object.h"
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -66,7 +68,9 @@ simple_object_internal_read (int descriptor, off_t offset,
   if (lseek (descriptor, offset, SEEK_SET) < 0)
     {
       *errmsg = "lseek";
+#ifndef UNDER_CE
       *err = errno;
+#endif
       return 0;
     }
 
@@ -80,10 +84,15 @@ simple_object_internal_read (int descriptor, off_t offset,
 	  buffer += got;
 	  size -= got;
 	}
-      else if (errno != EINTR)
+      else
+#ifndef UNDER_CE
+	if (errno != EINTR)
+#endif
 	{
 	  *errmsg = "read";
+#ifndef UNDER_CE
 	  *err = errno;
+#endif
 	  return 0;
 	}
     }
@@ -110,7 +119,9 @@ simple_object_internal_write (int descriptor, off_t offset,
   if (lseek (descriptor, offset, SEEK_SET) < 0)
     {
       *errmsg = "lseek";
+#ifndef UNDER_CE
       *err = errno;
+#endif
       return 0;
     }
 
@@ -124,10 +135,15 @@ simple_object_internal_write (int descriptor, off_t offset,
 	  buffer += wrote;
 	  size -= wrote;
 	}
-      else if (errno != EINTR)
+      else
+#ifndef UNDER_CE
+	if (errno != EINTR)
+#endif
 	{
 	  *errmsg = "write";
+#ifndef UNDER_CE
 	  *err = errno;
+#endif
 	  return 0;
 	}
     }

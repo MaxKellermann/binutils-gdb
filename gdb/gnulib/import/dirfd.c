@@ -20,13 +20,17 @@
 #include <config.h>
 
 #include <dirent.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 int
 dirfd (DIR *dir_p)
 {
   int fd = DIR_TO_FD (dir_p);
+#ifndef UNDER_CE
   if (fd == -1)
     errno = ENOTSUP;
+#endif
   return fd;
 }

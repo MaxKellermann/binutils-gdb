@@ -37,7 +37,9 @@
 # include <sys/param.h>
 #endif
 #include <sys/stat.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <stddef.h>
 
 #ifdef _LIBC
@@ -137,7 +139,9 @@ __realpath (const char *name, char *resolved)
         {
           /* It's easier to set errno to ENOMEM than to rely on the
              'malloc-posix' gnulib module.  */
+#ifndef UNDER_CE
           errno = ENOMEM;
+#endif
           return NULL;
         }
     }
@@ -240,7 +244,9 @@ __realpath (const char *name, char *resolved)
                 {
                   /* It's easier to set errno to ENOMEM than to rely on the
                      'realloc-posix' gnulib module.  */
+#ifndef UNDER_CE
                   errno = ENOMEM;
+#endif
                   goto error;
                 }
               rpath = new_rpath;
@@ -278,16 +284,22 @@ __realpath (const char *name, char *resolved)
               buf = malloca (path_max);
               if (!buf)
                 {
+#ifndef UNDER_CE
                   errno = ENOMEM;
+#endif
                   goto error;
                 }
 
               n = __readlink (rpath, buf, path_max - 1);
               if (n < 0)
                 {
+#ifndef UNDER_CE
                   int saved_errno = errno;
+#endif
                   freea (buf);
+#ifndef UNDER_CE
                   errno = saved_errno;
+#endif
                   goto error;
                 }
               buf[n] = '\0';
@@ -298,7 +310,9 @@ __realpath (const char *name, char *resolved)
                   if (!extra_buf)
                     {
                       freea (buf);
+#ifndef UNDER_CE
                       errno = ENOMEM;
+#endif
                       goto error;
                     }
                 }
@@ -365,12 +379,16 @@ __realpath (const char *name, char *resolved)
 
 error:
   {
+#ifndef UNDER_CE
     int saved_errno = errno;
+#endif
     if (extra_buf)
       freea (extra_buf);
     if (resolved == NULL)
       free (rpath);
+#ifndef UNDER_CE
     errno = saved_errno;
+#endif
   }
   return NULL;
 }

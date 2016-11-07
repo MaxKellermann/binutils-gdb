@@ -23,9 +23,11 @@ Boston, MA 02110-1301, USA.  */
 #include "pex-common.h"
 
 #include <stdio.h>
+#ifndef UNDER_CE
 #include <errno.h>
 #ifdef NEED_DECLARATION_ERRNO
 extern int errno;
+#endif
 #endif
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -192,7 +194,9 @@ pex_run_in_environment (struct pex_obj *obj, int flags, const char *executable,
 				  (flags & PEX_BINARY_INPUT) != 0);
       if (in < 0)
 	{
+#ifndef UNDER_CE
 	  *err = errno;
+#endif
 	  errmsg = "open temporary file";
 	  goto error_exit;
 	}
@@ -255,7 +259,9 @@ pex_run_in_environment (struct pex_obj *obj, int flags, const char *executable,
     {
       if (obj->funcs->pipe (obj, p, (flags & PEX_BINARY_OUTPUT) != 0) < 0)
 	{
+#ifndef UNDER_CE
 	  *err = errno;
+#endif
 	  errmsg = "pipe";
 	  goto error_exit;
 	}
@@ -271,7 +277,9 @@ pex_run_in_environment (struct pex_obj *obj, int flags, const char *executable,
 				    (flags & PEX_STDOUT_APPEND) != 0);
       if (out < 0)
 	{
+#ifndef UNDER_CE
 	  *err = errno;
+#endif
 	  errmsg = "open temporary output file";
 	  goto error_exit;
 	}
@@ -305,7 +313,9 @@ pex_run_in_environment (struct pex_obj *obj, int flags, const char *executable,
 	{
 	  if (obj->funcs->pipe (obj, p, (flags & PEX_BINARY_ERROR) != 0) < 0)
 	    {
+#ifndef UNDER_CE
 	      *err = errno;
+#endif
 	      errmsg = "pipe";
 	      goto error_exit;
 	    }
@@ -325,7 +335,9 @@ pex_run_in_environment (struct pex_obj *obj, int flags, const char *executable,
 				       (flags & PEX_STDERR_APPEND) != 0);
       if (errdes < 0)
 	{
+#ifndef UNDER_CE
 	  *err = errno;
+#endif
 	  errmsg = "open error file";
 	  goto error_exit;
 	}
@@ -389,7 +401,9 @@ pex_input_file (struct pex_obj *obj, int flags, const char *in_name)
       || (obj->next_input >= 0 && obj->next_input != STDIN_FILE_NO)
       || obj->next_input_name)
     {
+#ifndef UNDER_CE
       errno = EINVAL;
+#endif
       return NULL;
     }
 
@@ -440,10 +454,14 @@ pex_input_pipe (struct pex_obj *obj, int binary)
   f = obj->funcs->fdopenw (obj, p[WRITE_PORT], binary != 0);
   if (! f)
     {
+#ifndef UNDER_CE
       int saved_errno = errno;
+#endif
       obj->funcs->close (obj, p[READ_PORT]);
       obj->funcs->close (obj, p[WRITE_PORT]);
+#ifndef UNDER_CE
       errno = saved_errno;
+#endif
       return NULL;
     }
 
@@ -452,7 +470,9 @@ pex_input_pipe (struct pex_obj *obj, int binary)
   return f;
 
  usage_error:
+#ifndef UNDER_CE
   errno = EINVAL;
+#endif
   return NULL;
 }
 
@@ -471,7 +491,9 @@ pex_read_output (struct pex_obj *obj, int binary)
 	 try to read the file.  */
       if (!pex_get_status_and_time (obj, 0, &errmsg, &err))
 	{
+#ifndef UNDER_CE
 	  errno = err;
+#endif
 	  return NULL;
 	}
 
