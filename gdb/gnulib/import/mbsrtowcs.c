@@ -20,7 +20,9 @@
 /* Specification.  */
 #include <wchar.h>
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <limits.h>
 #include <stdlib.h>
 

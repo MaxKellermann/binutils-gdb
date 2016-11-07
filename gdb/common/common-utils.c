@@ -302,7 +302,9 @@ strtoulst (const char *num, const char **trailer, int base)
 
   if (base < 2 || base > 36)
     {
+#ifndef UNDER_CE
       errno = EINVAL;
+#endif
       return 0;
     }
 
@@ -314,7 +316,9 @@ strtoulst (const char *num, const char **trailer, int base)
       result &= ((ULONGEST) 1 << HIGH_BYTE_POSN) - 1;
       if (high_part > 0xff)
 	{
+#ifndef UNDER_CE
 	  errno = ERANGE;
+#endif
 	  result = ~ (ULONGEST) 0;
 	  high_part = 0;
 	  minus = 0;

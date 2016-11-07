@@ -31,7 +31,9 @@
 #include <alloca.h>
 #include <assert.h>
 #include <ctype.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -300,7 +302,9 @@ fnmatch (const char *pattern, const char *string, int flags)
                                        && totsize <= SIZE_MAX / sizeof (wchar_t)),
                                     0))
                 {
+#ifndef UNDER_CE
                   errno = ENOMEM;
+#endif
                   return -1;
                 }
 
@@ -312,7 +316,9 @@ fnmatch (const char *pattern, const char *string, int flags)
                   wpattern = malloc (totsize * sizeof (wchar_t));
                   if (__builtin_expect (! wpattern, 0))
                     {
+#ifndef UNDER_CE
                       errno = ENOMEM;
+#endif
                       return -1;
                     }
                 }

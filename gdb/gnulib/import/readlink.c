@@ -19,7 +19,9 @@
 /* Specification.  */
 #include <unistd.h>
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <string.h>
 #include <sys/stat.h>
 
@@ -38,7 +40,11 @@ readlink (const char *name, char *buf _GL_UNUSED,
      without symbolic links, lstat() - if it exists - would be equivalent to
      stat(), therefore we can use stat().  This saves us a configure check.  */
   if (stat (name, &statbuf) >= 0)
+#ifdef UNDER_CE
+    {}
+#else
     errno = EINVAL;
+#endif
   return -1;
 }
 

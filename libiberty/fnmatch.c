@@ -43,7 +43,9 @@ Boston, MA 02110-1301, USA.  */
 #endif
 #endif
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <fnmatch.h>
 #include <safe-ctype.h>
 

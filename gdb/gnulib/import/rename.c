@@ -28,7 +28,9 @@
    requires use of native Windows calls to allow atomic renames over
    existing files.  */
 
+#ifndef UNDER_CE
 # include <errno.h>
+#endif
 # include <stdbool.h>
 # include <stdlib.h>
 # include <sys/stat.h>
@@ -59,7 +61,9 @@ rpl_rename (char const *src, char const *dst)
   /* Filter out dot as last component.  */
   if (!src_len || !dst_len)
     {
+#ifndef UNDER_CE
       errno = ENOENT;
+#endif
       return -1;
     }
   if (*src_base == '.')
@@ -67,7 +71,9 @@ rpl_rename (char const *src, char const *dst)
       size_t len = base_len (src_base);
       if (len == 1 || (len == 2 && src_base[1] == '.'))
         {
+#ifndef UNDER_CE
           errno = EINVAL;
+#endif
           return -1;
         }
     }
@@ -76,7 +82,9 @@ rpl_rename (char const *src, char const *dst)
       size_t len = base_len (dst_base);
       if (len == 1 || (len == 2 && dst_base[1] == '.'))
         {
+#ifndef UNDER_CE
           errno = EINVAL;
+#endif
           return -1;
         }
     }
@@ -92,7 +100,11 @@ rpl_rename (char const *src, char const *dst)
     return -1;
   if (stat (dst, &dst_st))
     {
-      if (errno != ENOENT || (!S_ISDIR (src_st.st_mode) && dst_slash))
+      if (
+#ifndef UNDER_CE
+	  errno != ENOENT ||
+#endif
+	  (!S_ISDIR (src_st.st_mode) && dst_slash))
         return -1;
       dst_exists = false;
     }
@@ -100,7 +112,9 @@ rpl_rename (char const *src, char const *dst)
     {
       if (S_ISDIR (dst_st.st_mode) != S_ISDIR (src_st.st_mode))
         {
+#ifndef UNDER_CE
           errno = S_ISDIR (dst_st.st_mode) ? EISDIR : ENOTDIR;
+#endif
           return -1;
         }
       dst_exists = true;
@@ -142,7 +156,9 @@ rpl_rename (char const *src, char const *dst)
         {
           free (src_temp);
           free (dst_temp);
+#ifndef UNDER_CE
           errno = ENOMEM;
+#endif
           return -1;
         }
       src_len = strlen (src_temp);
@@ -154,17 +170,23 @@ rpl_rename (char const *src, char const *dst)
           free (dst_temp);
           if (error)
             {
+#ifndef UNDER_CE
               errno = EINVAL;
+#endif
               return -1;
             }
           return 0;
         }
       if (rmdir (dst))
         {
+#ifndef UNDER_CE
           error = errno;
+#endif
           free (src_temp);
           free (dst_temp);
+#ifndef UNDER_CE
           errno = error;
+#endif
           return -1;
         }
       free (src_temp);
@@ -189,6 +211,7 @@ rpl_rename (char const *src, char const *dst)
       error = GetLastError ();
     }
 
+#ifndef UNDER_CE
   switch (error)
     {
     case ERROR_FILE_NOT_FOUND:
@@ -258,6 +281,7 @@ rpl_rename (char const *src, char const *dst)
       errno = EINVAL;
       break;
     }
+#endif
 
   return -1;
 }

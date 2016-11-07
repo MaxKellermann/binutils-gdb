@@ -68,7 +68,9 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>	/* for strcasecmp and strncasecmp */
 #endif
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 #include <alloca.h>
 
 #include "ansidecl.h"

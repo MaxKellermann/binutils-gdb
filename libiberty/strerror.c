@@ -18,7 +18,9 @@
 #include "libiberty.h"
 
 #include <stdio.h>
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 #ifdef HAVE_SYS_ERRLIST
 #undef sys_nerr

@@ -214,17 +214,25 @@ agent_run_command (int pid, const char *cmd, int len)
 
       DEBUG_AGENT ("agent: signalling helper thread\n");
 
+#ifndef UNDER_CE
       do
 	{
+#endif
 	  ret = write (fd, buf, 1);
+#ifndef UNDER_CE
 	} while (ret == -1 && errno == EINTR);
+#endif
 
 	DEBUG_AGENT ("agent: waiting for helper thread's response\n");
 
+#ifndef UNDER_CE
       do
 	{
+#endif
 	  ret = read (fd, buf, 1);
+#ifndef UNDER_CE
 	} while (ret == -1 && errno == EINTR);
+#endif
 
       close (fd);
 

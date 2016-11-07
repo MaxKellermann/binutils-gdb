@@ -44,11 +44,15 @@ environment.  This implementation is not safe for multithreaded code.
 #include <sys/types.h> /* For `size_t' */
 #include <stdio.h>     /* For `NULL' */
 
+#ifdef UNDER_CE
+#define __set_errno(ev) do {} while (0)
+#else
 #include <errno.h>
 #if !defined(errno) && !defined(HAVE_ERRNO_DECL)
 extern int errno;
 #endif
 #define __set_errno(ev) ((errno) = (ev))
+#endif
 
 #if HAVE_STDLIB_H
 # include <stdlib.h>

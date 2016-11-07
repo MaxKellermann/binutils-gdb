@@ -82,9 +82,15 @@ fdwalk (int (*func) (void *, int), void *arg)
 	  char *tail;
 	  int result;
 
+#ifndef UNDER_CE
 	  errno = 0;
+#endif
 	  fd = strtol (entry->d_name, &tail, 10);
-	  if (*tail != '\0' || errno != 0)
+	  if (*tail != '\0'
+#ifndef UNDER_CE
+	      || errno != 0
+#endif
+	      )
 	    continue;
 	  if ((int) fd != fd)
 	    {
