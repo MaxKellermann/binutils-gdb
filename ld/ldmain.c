@@ -263,6 +263,18 @@ main (int argc, char **argv)
   config.make_executable = TRUE;
   config.magic_demand_paged = TRUE;
   config.text_read_only = TRUE;
+
+  /* Make .text sections writable, because we need it for runtime
+     pseudo relocations; the pseudo relocator attempts to use
+     VirtualProtect() to make this flag temporary, but unfortunately
+     that fails on WinCE with ERROR_INVALID_PARAMETER.  Note that we
+     should better move this kludge to pe_create_import_fixup() and
+     only enable it on demand (if there really are pseudo
+     relocations), and there is already code which resets this flag;
+     but it doesn't work, because it's too late - ldlang_open_output()
+     has already been called */
+  config.text_read_only = FALSE;
+
   link_info.disable_target_specific_optimizations = -1;
 
   command_line.warn_mismatch = TRUE;
