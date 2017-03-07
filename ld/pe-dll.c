@@ -1201,7 +1201,7 @@ fill_edata (bfd *abfd, struct bfd_link_info *info ATTRIBUTE_UNUSED)
   enamestr = (char *) eordinals + 2 * count_exported_byname;
 
 #define ERVA(ptr) (((unsigned char *)(ptr) - edata_d) \
-		   + edata_s->output_section->vma - image_base)
+		   + edata_s->output_section->vma - image_base + edata_s->output_offset)
 
   memset (edata_d, 0, edata_sz);
 
