@@ -162,6 +162,13 @@ SECTIONS
     ${RELOCATING+__rt_psrelocs_start = .;}
     ${RELOCATING+KEEP(*(.rdata_runtime_pseudo_reloc))}
     ${RELOCATING+__rt_psrelocs_end = .;}
+
+  /* Moved .edata */
+  /* End moved .edata */
+
+  /* Moved .idata */
+	/* Moving idata appears to cause a crash even in d2.exe */
+  /* End moved .idata */
   }
   ${RELOCATING+__rt_psrelocs_size = __rt_psrelocs_end - __rt_psrelocs_start;}
   ${RELOCATING+___RUNTIME_PSEUDO_RELOC_LIST_END__ = .;}

@@ -4391,6 +4391,9 @@ _bfd_XXi_final_link_postscript (bfd * abfd, struct coff_final_link_info *pfinfo)
 
       h1 = coff_link_hash_lookup (coff_hash_table (info),
 				  ".idata$4", FALSE, FALSE, TRUE);
+      if (!h1)
+	h1 = coff_link_hash_lookup (coff_hash_table (info),
+				    "__idata_4", FALSE, FALSE, TRUE);
       if (h1 != NULL
 	  && (h1->root.type == bfd_link_hash_defined
 	   || h1->root.type == bfd_link_hash_defweak)
