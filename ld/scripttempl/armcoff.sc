@@ -24,6 +24,22 @@ DTOR='.dtor : {
     *(SORT(.dtors.*))
     *(.dtor)
   }'
+if test "${RELOCATING}"; then
+  R_IDATA234='
+    SORT(*)(.idata$2)
+    SORT(*)(.idata$3)
+    /* These zeroes mark the end of the import list.  */
+    LONG (0); LONG (0); LONG (0); LONG (0); LONG (0);
+    SORT(*)(.idata$4)'
+  R_IDATA5='SORT(*)(.idata$5)'
+  R_IDATA67='
+    SORT(*)(.idata$6)
+    SORT(*)(.idata$7)'
+else
+  R_IDATA234=
+  R_IDATA5=
+  R_IDATA67=
+fi
 
 cat <<EOF
 /* Copyright (C) 2014-2018 Free Software Foundation, Inc.
@@ -73,6 +89,16 @@ SECTIONS
   }
   ${CONSTRUCTING+${RELOCATING-$CTOR}}
   ${CONSTRUCTING+${RELOCATING-$DTOR}}
+  .idata ${RELOCATING+BLOCK(__section_alignment__)} :
+  {
+    /* This cannot currently be handled with grouped sections.
+	See pep.em:sort_sections.  */
+	${R_IDATA234}
+	${RELOCATING+__idata5_start__ = .;}
+    ${R_IDATA5}
+	${RELOCATING+__idata5_end__ = .;}
+    ${R_IDATA67}
+  }
   .bss ${RELOCATING+ ALIGN(0x8)} :
   {
     ${RELOCATING+ __bss_start__ = . ;}
