@@ -17,5 +17,8 @@
    Software Foundation, 51 Franklin Street - Fifth Floor, Boston, MA
    02110-1301, USA.  */
 
+#define CPU_DEFAULT ARM_ARCH_V4
+#define FPU_DEFAULT FPU_ARCH_VFP
+
 #define TE_WINCE
 #include "te-pe.h"
