@@ -1379,6 +1379,7 @@ fake_breakpoint_event (void)
   faked_breakpoint = 1;
 
   memset (&current_event, 0, sizeof (current_event));
+  current_event.dwProcessId = current_process_id;
   current_event.dwThreadId = main_thread_id;
   current_event.dwDebugEventCode = EXCEPTION_DEBUG_EVENT;
   current_event.u.Exception.ExceptionRecord.ExceptionCode
