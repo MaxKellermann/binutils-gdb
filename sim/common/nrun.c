@@ -215,8 +215,12 @@ main (int argc, char **argv)
     case sim_signalled:
     case sim_stopped:
       if (sigrc != 0)
+#ifdef UNDER_CE
+	fprintf (stderr, "program stopped with signal %d.\n", sigrc);
+#else
 	fprintf (stderr, "program stopped with signal %d (%s).\n", sigrc,
 		 strsignal (sigrc));
+#endif
       break;
 
     case sim_exited:
