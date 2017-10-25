@@ -1249,6 +1249,14 @@ handle_exception (struct target_waitstatus *ourstatus)
       OUTMSG2 (("EXCEPTION_ACCESS_VIOLATION"));
       ourstatus->value.sig = GDB_SIGNAL_SEGV;
       break;
+    case EXCEPTION_DATATYPE_MISALIGNMENT:
+      OUTMSG2 (("EXCEPTION_DATATYPE_MISALIGNMENT"));
+      ourstatus->value.sig = GDB_SIGNAL_BUS;
+      break;
+    case EXCEPTION_IN_PAGE_ERROR:
+      OUTMSG2 (("EXCEPTION_IN_PAGE_ERROR"));
+      ourstatus->value.sig = GDB_SIGNAL_SEGV;
+      break;
     case STATUS_STACK_OVERFLOW:
       OUTMSG2 (("STATUS_STACK_OVERFLOW"));
       ourstatus->value.sig = GDB_SIGNAL_SEGV;
