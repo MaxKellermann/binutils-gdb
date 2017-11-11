@@ -272,7 +272,9 @@ static int
 win32_insert_point (enum raw_bkpt_type type, CORE_ADDR addr,
 		    int size, struct raw_breakpoint *bp)
 {
-  if (the_low_target.insert_point != NULL)
+  if (type == raw_bkpt_type_sw)
+    return insert_memory_breakpoint (bp);
+  else if (the_low_target.insert_point != NULL)
     return the_low_target.insert_point (type, addr, size, bp);
   else
     /* Unsupported (see target.h).  */
@@ -283,7 +285,9 @@ static int
 win32_remove_point (enum raw_bkpt_type type, CORE_ADDR addr,
 		    int size, struct raw_breakpoint *bp)
 {
-  if (the_low_target.remove_point != NULL)
+  if (type == raw_bkpt_type_sw)
+    return remove_memory_breakpoint (bp);
+  else if (the_low_target.remove_point != NULL)
     return the_low_target.remove_point (type, addr, size, bp);
   else
     /* Unsupported (see target.h).  */
@@ -1245,6 +1249,14 @@ handle_exception (struct target_waitstatus *ourstatus)
       OUTMSG2 (("EXCEPTION_ACCESS_VIOLATION"));
       ourstatus->value.sig = GDB_SIGNAL_SEGV;
       break;
+    case EXCEPTION_DATATYPE_MISALIGNMENT:
+      OUTMSG2 (("EXCEPTION_DATATYPE_MISALIGNMENT"));
+      ourstatus->value.sig = GDB_SIGNAL_BUS;
+      break;
+    case EXCEPTION_IN_PAGE_ERROR:
+      OUTMSG2 (("EXCEPTION_IN_PAGE_ERROR"));
+      ourstatus->value.sig = GDB_SIGNAL_SEGV;
+      break;
     case STATUS_STACK_OVERFLOW:
       OUTMSG2 (("STATUS_STACK_OVERFLOW"));
       ourstatus->value.sig = GDB_SIGNAL_SEGV;
@@ -1367,6 +1379,7 @@ fake_breakpoint_event (void)
   faked_breakpoint = 1;
 
   memset (&current_event, 0, sizeof (current_event));
+  current_event.dwProcessId = current_process_id;
   current_event.dwThreadId = main_thread_id;
   current_event.dwDebugEventCode = EXCEPTION_DEBUG_EVENT;
   current_event.u.Exception.ExceptionRecord.ExceptionCode
