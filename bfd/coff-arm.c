@@ -1187,6 +1187,7 @@ coff_arm_relocate_section (bfd *output_bfd,
       struct internal_syment *	     sym;
       bfd_vma			     addend;
       bfd_vma			     val;
+      asection *sec;
       reloc_howto_type *	     howto;
       bfd_reloc_status_type	     rstat;
       bfd_vma			     h_val;
@@ -1567,6 +1568,41 @@ coff_arm_relocate_section (bfd *output_bfd,
 		     + sec->output_section->vma
 		     + sec->output_offset);
 	      }
+
+	  else if (h->root.type == bfd_link_hash_undefweak)
+	    {
+	      if (h->symbol_class == C_NT_WEAK && h->numaux == 1)
+		{
+		  /* See _Microsoft Portable Executable and Common Object
+		     File Format Specification_, section 5.5.3.
+		     Note that weak symbols without aux records are a GNU
+		     extension.
+		     FIXME: All weak externals are treated as having
+		     characteristic IMAGE_WEAK_EXTERN_SEARCH_NOLIBRARY (1).
+		     These behave as per SVR4 ABI:  A library member
+		     will resolve a weak external only if a normal
+		     external causes the library member to be linked.
+		     See also linker.c: generic_link_check_archive_element. */
+		  struct coff_link_hash_entry *h2 =
+		    h->auxbfd->tdata.coff_obj_data->sym_hashes[
+		    h->aux->x_sym.x_tagndx.l];
+
+		  if (!h2 || h2->root.type == bfd_link_hash_undefined)
+		    {
+		      sec = bfd_abs_section_ptr;
+		      val = 0;
+		    }
+		  else
+		    {
+		      sec = h2->root.u.def.section;
+		      val = h2->root.u.def.value
+			+ sec->output_section->vma + sec->output_offset;
+		    }
+		}
+	      else
+		/* This is a GNU extension.  */
+		val = 0;
+	    }
 
 	  else if (! bfd_link_relocatable (info))
 	    (*info->callbacks->undefined_symbol)
